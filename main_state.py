@@ -1,6 +1,4 @@
 
-__author__ = 'Min'
-
 import sys
 import random
 import json
@@ -12,88 +10,97 @@ from pico2d import *
 
 name = "MainState"
 running = None
-class Grass:
+x, y = 0, 0
+class Background:
     def __init__(self):
-        self.image = load_image('grass.png')
+        self.image = load_image('resource/game_background.png')
 
     def draw(self):
-        self.image.draw(400, 30)
+        self.image.draw(400,300)
 
 
-class Boy:
+class Main_character:
     image = None
 
-    LEFT_RUN, RIGHT_RUN, LEFT_STAND, RIGHT_STAND = 0, 1, 2, 3
+    STAND, GO_RIGHT = 0, 1
 
-
-    def handle_left_run(boy):
-        boy.x -= 5
-        boy.run_frames += 1
-        if boy.x < 0:
-            boy.state = boy.RIGHT_RUN
-            boy.x = 0
-        if boy.run_frames == 50:
-            boy.state = boy.LEFT_STAND
-
-
-    def handle_left_stand(boy):
-        boy.stand_frames += 1
-        if boy.stand_frames == 25:
-            boy.state = boy.LEFT_RUN
-
-
-
-    def handle_right_run(boy):
-        boy.x += 5
-        boy.run_frames += 1
-        if boy.x > 800:
-            boy.state = boy.LEFT_RUN
-            boy.x = 800
-        if boy.run_frames == 50:
-            boy.state = boy.RIGHT_STAND
-
-    def handle_right_stand(boy):
-        boy.stand_frames += 1
-        if boy.stand_frames == 25:
-            boy.state = boy.RIGHT_RUN
-
-    handle_state = {
-                LEFT_RUN: handle_left_run,
-                RIGHT_RUN: handle_right_run,
-                LEFT_STAND: handle_left_stand,
-                RIGHT_STAND: handle_right_stand
-    }
-
-
-    def update(boy):
-         boy.frame = (boy.frame + 1) % 8
-         boy.handle_state[boy.state](boy)
-
-
-
-    def __init__(boy):
-        boy.x, boy.y = random.randint(100, 700), 90
-        boy.frame = random.randint(0, 7)
-        boy.run_frames = 0
-        boy.stand_frames = 0
-        boy.state = boy.RIGHT_RUN
-        if Boy.image == None:
-            Boy.image = load_image('animation_sheet.png')
+    def __init__(self):
+        self.x, self.y = 50, 183
+        self.state = None
+        if self.image == None:
+            self.image = load_image('resource/main_character.png')
 
     def draw(self):
-        boy.image.clip_draw(self.frame * 100, self.state * 100, 100, 100, self.x, self.y)
+        self.image.draw(self.x, self.y)
 
+    def handle_go_right(self):
+        if self.state == self.GO_RIGHT:
+            self.x += 5
+            if self.x > 800:
+                self.x = 800
 
+    def handle_stand(self):
+        if self.state == self.STAND:
+            self.x += 0
+
+    handle_state = {
+        GO_RIGHT: handle_go_right,
+        STAND: handle_stand
+    }
+    def update(self):
+        self.handle_state[self.state](self)
+
+class Ground:
+    def __init__(self):
+        self.image = load_image('resource/ground.png')
+
+    def draw(self):
+        self.image.draw(400,300)
+
+class Dot:
+    image = None
+    global x, y
+    def __init__(self):
+        self.x, self.y = 400 + x, 300 + y
+        if self.image == None:
+            self.image = load_image('resource/dot.png')
+
+    def draw(self):
+        self.image.draw(x, y)
+
+    def update(self):
+        self.image.draw(x, y)
+""" 시작 버튼
+class Start_button:
+    image = None
+
+    def __init__(self):
+        self.x, self.y = 50, 550
+        if self.image == None:
+            self.image = load_image('resource/start_button.png')
+
+    def draw(self):
+        self.image.draw(self.x, self.y)
+
+    def update(self):
+        pass
+"""
 def enter():
-    global boy, grass
-    boy = Boy()
-    grass = Grass()
+    global maincharacter, background, startbutton, dot, ground
+    maincharacter = Main_character()
+    background = Background()
+    #startbutton = Start_button()
+    dot = Dot()
+    ground = Ground()
 
 
 def exit():
-    global boy, grass
-    del(boy)
-    del(grass)
+    global maincharacter, background, startbutton, dot, ground
+    del(maincharacter)
+    del(background)
+    #del(startbutton)
+    del(dot)
+    del(ground)
 
 def pause():
     pass
@@ -104,6 +111,7 @@ def resume():
 
 def handle_events():
     global running
+    global x, y
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -111,51 +119,49 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_state(title_state)
         elif(event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-            if boy.state == boy.RIGHT_RUN:
-                boy.run_frames = 0
-                boy.state = boy.LEFT_RUN
-            elif boy.state == boy.LEFT_RUN:
-                boy.run_frames = 0
-                boy.state = boy.RIGHT_RUN
-            elif boy.state == boy.RIGHT_STAND:
-                boy.stand_frames = 0
-                boy.state = boy.RIGHT_RUN
-            elif boy.state == boy.LEFT_STAND:
-                boy.stand_frames = 0
-                boy.state = boy.LEFT_RUN
+            maincharacter.x += 5
+        elif event.type == SDL_MOUSEBUTTONDOWN and event.type == SDL_MOUSEMOTION:
+            dot.x, dot.y = event.x, event.y
+            dot.image.draw()
+
 
 
 
 
 def update():
-    boy.update()
-    delay(0.05)
+    pass
 
 
 def draw():
     clear_canvas()
-    grass.draw()
-    boy.draw()
+    background.draw()
+    maincharacter.draw()
+    #startbutton.draw()
+    ground.draw()
     update_canvas()
 
 def main():
 
     open_canvas()
 
-    boy = Boy()
-    grass = Grass()
-
+    maincharacter = Main_character()
+    background = Background()
+    #startbutton = Start_button()
+    ground = Ground()
     global running
     running = True
 
     while running:
         handle_events()
 
-        boy.update()
+        maincharacter.update()
 
         clear_canvas()
-        grass.draw()
-        boy.draw()
+        background.draw()
+        maincharacter.draw()
+        dot.draw()
+        ground.draw()
+       # startbutton.draw()
         update_canvas()
 
         delay(0.04)

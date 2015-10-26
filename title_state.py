@@ -11,7 +11,7 @@ def enter():
     global image
     global title_menu
     image = load_image('resource/title.png') # 여기에 첫 메인 게임 화면 넣기
-    title_menu = load_image('resource/title_menu.png')
+    title_menu = load_image('resource/title_menu_gamestart.png')
 
 def exit():
     global image
@@ -37,9 +37,7 @@ def draw():
     update_canvas()
 
 def update():
-    global boy
-    boy.draw()
-
+    pass
 def pause():
     pass
 
