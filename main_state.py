@@ -65,16 +65,6 @@ class Ground:
     def draw(self):
         self.image.draw(400,300)
 
-class Dot:
-    image = None
-    global button_x, button_y
-    def __init__(self):
-        if self.image == None:
-            self.image = load_image('resource/dot.png')
-    def draw(self, mx, my):
-        self.image.draw(mx, my)
-
-
 """ 시작 버튼
 class Start_button:
     image = None
@@ -91,21 +81,17 @@ class Start_button:
         pass
 """
 def enter():
-    global maincharacter, background, startbutton, dot, ground
-    global dotzip
+    global maincharacter, background, startbutton, ground
     maincharacter = Main_character()
     background = Background()
     #startbutton = Start_button()
-    dot = Dot()
     ground = Ground()
-    dotzip = []
 
 def exit():
-    global maincharacter, background, startbutton, dot, ground
+    global maincharacter, background, startbutton, ground
     del(maincharacter)
     del(background)
     #del(startbutton)
-    del(dot)
     del(ground)
 
 def pause():
@@ -133,18 +119,7 @@ def handle_events():
             #dot_drawing()
         elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):
             print("마우스 버튼 업", event.x, 600 - event.y)
-            isMouseClicked = False;
-
-def dot_drawing():
-    global mx, my
-    mx = dot.button_x
-    my = dot.button_y
-
-    if len(dotzip) < 50:
-         dotzip.append(dot)
-
-
-
+            isMouseClicked = False
 
 def update():
     maincharacter.update()
@@ -161,9 +136,6 @@ def draw():
 
     for d in MouseList:
         draw_rectangle(d[0], d[1], d[0] + 1, d[1] +1)
-
-    for dot in dotzip:
-        dot.draw(mx, my)
 
     update_canvas()
 
