@@ -10,7 +10,15 @@ from pico2d import *
 
 name = "MainState"
 running = None
+chk = False
 x, y = 0, 0
+isMouseClicked = False
+button_x, button_y = 0, 0
+key_down_space = False
+
+# 마우스 좌표 저장에 대한 리스트
+MouseList = []
+
 class Background:
     def __init__(self):
         self.image = load_image('resource/game_background.png')
@@ -26,7 +34,7 @@ class Main_character:
 
     def __init__(self):
         self.x, self.y = 50, 183
-        self.state = None
+        self.state = self.STAND
         if self.image == None:
             self.image = load_image('resource/main_character.png')
 
@@ -59,17 +67,14 @@ class Ground:
 
 class Dot:
     image = None
-    global x, y
+    global button_x, button_y
     def __init__(self):
-        self.x, self.y = 400 + x, 300 + y
         if self.image == None:
             self.image = load_image('resource/dot.png')
+    def draw(self, mx, my):
+        self.image.draw(mx, my)
 
-    def draw(self):
-        self.image.draw(x, y)
 
-    def update(self):
-        self.image.draw(x, y)
 """ 시작 버튼
 class Start_button:
     image = None
@@ -87,12 +92,13 @@ class Start_button:
 """
 def enter():
     global maincharacter, background, startbutton, dot, ground
+    global dotzip
     maincharacter = Main_character()
     background = Background()
     #startbutton = Start_button()
     dot = Dot()
     ground = Ground()
-
+    dotzip = []
 
 def exit():
     global maincharacter, background, startbutton, dot, ground
@@ -105,69 +111,59 @@ def exit():
 def pause():
     pass
 
-
 def resume():
     pass
 
 def handle_events():
-    global running
-    global x, y
+    global button_x, button_y, isMouseClicked, MouseList
     events = get_events()
+
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+        elif event.type == SDL_MOUSEMOTION:
+            if(isMouseClicked) :
+                MouseList.append([event.x, 600 - event.y])
+                print("마우스 이동 중", event.x, 600 - event.y)
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
             game_framework.change_state(title_state)
-        elif(event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-            maincharacter.x += 5
-        elif event.type == SDL_MOUSEBUTTONDOWN and event.type == SDL_MOUSEMOTION:
-            dot.x, dot.y = event.x, event.y
-            dot.image.draw()
+        elif (event.type, event.button) == (SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT):
+            print("마우스 버튼 누름", event.x, 600 - event.y)
+            isMouseClicked = True
+            #dot_drawing()
+        elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):
+            print("마우스 버튼 업", event.x, 600 - event.y)
+            isMouseClicked = False;
 
+def dot_drawing():
+    global mx, my
+    mx = dot.button_x
+    my = dot.button_y
+
+    if len(dotzip) < 50:
+         dotzip.append(dot)
 
 
 
 
 def update():
-    pass
+    maincharacter.update()
 
 
 def draw():
+    global MouseList
+
     clear_canvas()
     background.draw()
     maincharacter.draw()
     #startbutton.draw()
     ground.draw()
+
+    for d in MouseList:
+        draw_rectangle(d[0], d[1], d[0] + 1, d[1] +1)
+
+    for dot in dotzip:
+        dot.draw(mx, my)
+
     update_canvas()
 
-def main():
-
-    open_canvas()
-
-    maincharacter = Main_character()
-    background = Background()
-    #startbutton = Start_button()
-    ground = Ground()
-    global running
-    running = True
-
-    while running:
-        handle_events()
-
-        maincharacter.update()
-
-        clear_canvas()
-        background.draw()
-        maincharacter.draw()
-        dot.draw()
-        ground.draw()
-       # startbutton.draw()
-        update_canvas()
-
-        delay(0.04)
-
-    close_canvas()
-
-
-if __name__ == '__main__':
-    main()
