@@ -10,11 +10,14 @@ from pico2d import *
 
 name = "MainState"
 running = None
-chk = False
 x, y = 0, 0
 isMouseClicked = False
-button_x, button_y = 0, 0
-key_down_space = False
+
+PIXEL_PER_METER = (10.0 / 0.1) # 10 pixel 10 cm
+RUN_SPEED_KMPH = 20.0
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 # 마우스 좌표 저장에 대한 리스트
 MouseList = []
@@ -27,12 +30,15 @@ class Background:
         self.image.draw(400,300)
 
 
+
 class Main_character:
     image = None
 
     STAND, GO_RIGHT = 0, 1
 
     def __init__(self):
+
+
         self.x, self.y = 50, 183
         self.state = self.STAND
         if self.image == None:
@@ -43,7 +49,7 @@ class Main_character:
 
     def handle_go_right(self):
         if self.state == self.GO_RIGHT:
-            self.x += 5
+            self.x += RUN_SPEED_PPS
             if self.x > 800:
                 self.x = 800
 
@@ -101,7 +107,7 @@ def resume():
     pass
 
 def handle_events():
-    global button_x, button_y, isMouseClicked, MouseList
+    global isMouseClicked, MouseList, maincharacter
     events = get_events()
 
     for event in events:
@@ -135,7 +141,8 @@ def draw():
     ground.draw()
 
     for d in MouseList:
-        draw_rectangle(d[0], d[1], d[0] + 1, d[1] +1)
+        draw_rectangle(d[0], d[1], d[0] + 1, d[1] + 1)
+
 
     update_canvas()
 
