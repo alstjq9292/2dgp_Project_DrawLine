@@ -24,7 +24,7 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 # 마우스 좌표 저장에 대한 리스트
 MouseList = []
 ColorList = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 0]]
- 
+
 class Background:
     def __init__(self):
         self.image = load_image('resource/game_background.png')
