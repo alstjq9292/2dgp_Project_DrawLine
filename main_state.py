@@ -8,6 +8,8 @@ import game_framework
 import title_state
 from pico2d import *
 
+import turtle
+
 name = "MainState"
 running = None
 x, y = 0, 0
@@ -21,6 +23,7 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 # 마우스 좌표 저장에 대한 리스트
 MouseList = []
+ColorList = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 0]]
 
 class Background:
     def __init__(self):
@@ -114,16 +117,13 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_MOUSEMOTION:
             if(isMouseClicked) :
-                MouseList.append([event.x, 600 - event.y])
-                print("마우스 이동 중", event.x, 600 - event.y)
+                MouseList.append([event.x, 600 - event.y, random.randint(0, 3)])
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
             game_framework.change_state(title_state)
         elif (event.type, event.button) == (SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT):
-            print("마우스 버튼 누름", event.x, 600 - event.y)
             isMouseClicked = True
             #dot_drawing()
         elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):
-            print("마우스 버튼 업", event.x, 600 - event.y)
             isMouseClicked = False
 
 def update():
@@ -139,8 +139,10 @@ def draw():
     startbutton.draw()
     ground.draw()
 
-    for d in MouseList:
-        draw_rectangle(d[0], d[1], d[0] + 1, d[1] + 1)
+    for i, d in enumerate(MouseList):
+        if (i > 0):
+            drawLine(MouseList[i - 1][0], MouseList[i-1][1], MouseList[i][0], MouseList[i][1],
+                     ColorList[MouseList[i][2]][0], ColorList[MouseList[i][2]][1], ColorList[MouseList[i][2]][2])
 
 
     update_canvas()
