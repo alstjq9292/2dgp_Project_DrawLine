@@ -71,7 +71,6 @@ class Ground:
     def draw(self):
         self.image.draw(400,300)
 
-""" 시작 버튼
 class Start_button:
     image = None
 
@@ -85,19 +84,19 @@ class Start_button:
 
     def update(self):
         pass
-"""
+
 def enter():
     global maincharacter, background, startbutton, ground
     maincharacter = Main_character()
     background = Background()
-    #startbutton = Start_button()
+    startbutton = Start_button()
     ground = Ground()
 
 def exit():
     global maincharacter, background, startbutton, ground
     del(maincharacter)
     del(background)
-    #del(startbutton)
+    del(startbutton)
     del(ground)
 
 def pause():
@@ -137,7 +136,7 @@ def draw():
     clear_canvas()
     background.draw()
     maincharacter.draw()
-    #startbutton.draw()
+    startbutton.draw()
     ground.draw()
 
     for d in MouseList:
