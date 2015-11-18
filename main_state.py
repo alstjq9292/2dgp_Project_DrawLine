@@ -16,12 +16,19 @@ is_goal = True
 frame = 0
 x, y = 0, 0
 isMouseClicked = False
+'''
+#속도 관련 변수
 PIXEL_PER_METER = (10.0 / 0.1) # 10 pixel 10 cm
 RUN_SPEED_KMPH = 20.0
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
+#시간 관련 변수
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAME_PER_ACTION = 8
+'''
 # 마우스 좌표 저장에 대한 리스트 
 MouseList = []
 ColorList = [[217, 65, 197], [165, 102, 255], [71, 200, 62], [92, 209, 229]]
@@ -41,8 +48,6 @@ class Main_character:
     STAND, GO_RIGHT = 0, 1
 
     def __init__(self):
-
-
         self.x, self.y = 50, 183
         self.state = self.STAND
         if self.image == None:
@@ -53,7 +58,7 @@ class Main_character:
 
     def handle_go_right(self):
         if self.state == self.GO_RIGHT:
-            self.x += RUN_SPEED_PPS
+            #self.x += RUN_SPEED_PPS
             if self.x > 800:
                 self.x = 800
 
@@ -65,20 +70,35 @@ class Main_character:
         GO_RIGHT: handle_go_right,
         STAND: handle_stand
     }
+
     def update(self):
         self.handle_state[self.state](self)
 
 class Stargoal:
     image = None
+
+    PIXEL_PER_METER = (10.0 / 0.1) # 10 pixel 10 cm
+    RUN_SPEED_KMPH = 20.0
+    RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+    RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+    RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+    TIME_PER_ACTION = 0.5
+    ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+    FRAME_PER_ACTION = 8
+
     def __init__(self):
         self.x, self.y = 750, 200
-        self.frame = 0
+        self.frame = random.randint(0,7)
+        self.total_frames = 0.0
         if self.image == None:
             self.image = load_image('resource/stargoal_animation.png')
 
-    def update(self):
-        self.frame = (self.frame + 1) % 8
-        delay(0.10)
+    def update(self, frame_time):
+        distance = stargoal.RUN_SPEED_PPS * frame_time
+        self.total_frames += stargoal.FRAME_PER_ACTION * stargoal.ACTION_PER_TIME * frame_time
+        self.frame = int(self.total_frames) % 8
+
 
     def draw(self):
         self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
@@ -112,6 +132,15 @@ def exit():
     del(startbutton)
     del(stargoal)
 
+current_time = 0.0
+
+def get_frame_time():
+
+    global current_time
+
+    frame_time = get_time() - current_time
+    current_time += frame_time
+    return frame_time
 
 def pause():
     pass
@@ -135,14 +164,13 @@ def handle_events():
         elif (event.type, event.button) == (SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT):
             isMouseClicked = True
             print(event.x, 600 - event.y)
-            #dot_drawing()
         elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):
             isMouseClicked = False
 
 
 def update():
     maincharacter.update()
-    stargoal.update()
+    stargoal.update(get_frame_time())
 
 def draw():
     global MouseList
@@ -163,3 +191,23 @@ def draw():
 
     update_canvas()
 
+
+def main():
+
+    global running
+    global current_time
+
+    running = True
+    current_time = get_time()
+
+    while running:
+        frame_time = get_frame_time()
+        handle_events()
+        stargoal.update(frame_time)
+
+        clear_canvas()
+        stargoal.draw()
+        update_canvas()
+
+if __name__ == '__main__':
+    main()
