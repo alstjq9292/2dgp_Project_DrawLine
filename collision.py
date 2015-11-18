@@ -4,14 +4,12 @@ from pico2d import *
 import game_framework
 
 
-from land import Land # import Land class from land.py
+from Land import Land # import Land class from land.py
 
 name = "collision"
 
 boy = None
-balls = None
-big_balls = None
-grass = None
+
 
 def create_world():
     global boy, grass, balls, big_balls
@@ -91,9 +89,6 @@ def update(frame_time):
         if collide(grass, ball):
             ball.y = 70
             ball.stop()
-
-
-    delay(0.2)
 
 
 

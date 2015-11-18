@@ -8,12 +8,13 @@ import game_framework
 import title_state
 from pico2d import *
 
-import turtle
+from Land import Land
 
 name = "MainState"
 running = None
 x, y = 0, 0
 isMouseClicked = False
+s = SDL_CreateRGBSurface(0, 100, 100, 32, 0, 0, 0, 0)
 
 PIXEL_PER_METER = (10.0 / 0.1) # 10 pixel 10 cm
 RUN_SPEED_KMPH = 20.0
@@ -67,13 +68,6 @@ class Main_character:
     def update(self):
         self.handle_state[self.state](self)
 
-class Ground:
-    def __init__(self):
-        self.image = load_image('resource/ground.png')
-
-    def draw(self):
-        self.image.draw(400,300)
-
 class Start_button:
     image = None
 
@@ -89,18 +83,16 @@ class Start_button:
         pass
 
 def enter():
-    global maincharacter, background, startbutton, ground
+    global maincharacter, background, startbutton
     maincharacter = Main_character()
     background = Background()
     startbutton = Start_button()
-    ground = Ground()
 
 def exit():
-    global maincharacter, background, startbutton, ground
+    global maincharacter, background, startbutton
     del(maincharacter)
     del(background)
     del(startbutton)
-    del(ground)
 
 def pause():
     pass
@@ -137,13 +129,14 @@ def draw():
     background.draw()
     maincharacter.draw()
     startbutton.draw()
-    ground.draw()
 
     for i, d in enumerate(MouseList):
         if (i > 0):
             drawLine(MouseList[i - 1][0], MouseList[i-1][1], MouseList[i][0], MouseList[i][1],
                      ColorList[MouseList[i][2]][0], ColorList[MouseList[i][2]][1], ColorList[MouseList[i][2]][2])
 
+    Land.draw(0, 0, 340, 160)
+    Land.draw(460, 0, 340, 160)
 
     update_canvas()
 

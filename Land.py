@@ -1,36 +1,15 @@
 __author__ = 'Min'
 
-import game_framework
-
-import main_state
 from pico2d import *
 
-name = "land"
+name = "Land"
+
+leftBottomX = 0
+leftBottomY = 0
+width = 0
+height = 0
 
 class Land:
-    pass
+    def draw(leftBottomX, leftBottomY, width, height):
+        draw_fill_rectangle(leftBottomX, leftBottomY, width, height)
 
-def enter():
-    pass
-
-
-def exit():
-    pass
-
-def update():
-    pass
-
-def draw():
-
-    clear_canvas()
-
-    update_canvas()
-
-def handle_events():
-    events = get_events()
-    pass
-
-def pause(): pass
-
-
-def resume(): pass
