@@ -14,7 +14,6 @@ name = "MainState"
 running = None
 x, y = 0, 0
 isMouseClicked = False
-s = SDL_CreateRGBSurface(0, 100, 100, 32, 0, 0, 0, 0)
 
 PIXEL_PER_METER = (10.0 / 0.1) # 10 pixel 10 cm
 RUN_SPEED_KMPH = 20.0
@@ -83,7 +82,7 @@ class Start_button:
         pass
 
 def enter():
-    global maincharacter, background, startbutton
+    global maincharacter, background, startbutton, land
     maincharacter = Main_character()
     background = Background()
     startbutton = Start_button()
@@ -93,6 +92,7 @@ def exit():
     del(maincharacter)
     del(background)
     del(startbutton)
+
 
 def pause():
     pass
@@ -114,6 +114,7 @@ def handle_events():
             game_framework.change_state(title_state)
         elif (event.type, event.button) == (SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT):
             isMouseClicked = True
+            print(event.x, 600 - event.y)
             #dot_drawing()
         elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):
             isMouseClicked = False
@@ -135,8 +136,8 @@ def draw():
             drawLine(MouseList[i - 1][0], MouseList[i-1][1], MouseList[i][0], MouseList[i][1],
                      ColorList[MouseList[i][2]][0], ColorList[MouseList[i][2]][1], ColorList[MouseList[i][2]][2])
 
-    Land.draw(0, 0, 340, 160)
-    Land.draw(460, 0, 340, 160)
+    Land.draw_rect(0, 0, 340, 160)
+    Land.draw_rect(460, 0, 340, 160)
 
     update_canvas()
 
