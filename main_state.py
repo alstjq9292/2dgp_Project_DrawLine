@@ -6,15 +6,16 @@ import os
 
 import game_framework
 import title_state
+import stargoal
 from pico2d import *
 
 from Land import Land
 
 name = "MainState"
-running = None
+is_goal = True
+frame = 0
 x, y = 0, 0
 isMouseClicked = False
-
 PIXEL_PER_METER = (10.0 / 0.1) # 10 pixel 10 cm
 RUN_SPEED_KMPH = 20.0
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
@@ -67,6 +68,22 @@ class Main_character:
     def update(self):
         self.handle_state[self.state](self)
 
+class Stargoal:
+    image = None
+    def __init__(self):
+        self.x, self.y = 750, 200
+        self.frame = 0
+        if self.image == None:
+            self.image = load_image('resource/stargoal_animation.png')
+
+    def update(self):
+        self.frame = (self.frame + 1) % 8
+        delay(0.10)
+
+    def draw(self):
+        self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
+
+
 class Start_button:
     image = None
 
@@ -82,16 +99,18 @@ class Start_button:
         pass
 
 def enter():
-    global maincharacter, background, startbutton, land
+    global maincharacter, background, startbutton, land, stargoal
     maincharacter = Main_character()
     background = Background()
     startbutton = Start_button()
+    stargoal = Stargoal()
 
 def exit():
-    global maincharacter, background, startbutton
+    global maincharacter, background, startbutton, land, stargoal
     del(maincharacter)
     del(background)
     del(startbutton)
+    del(stargoal)
 
 
 def pause():
@@ -101,12 +120,13 @@ def resume():
     pass
 
 def handle_events():
-    global isMouseClicked, MouseList, maincharacter
+    global isMouseClicked, MouseList, maincharacter, stargoal, is_goal, frame
     events = get_events()
 
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
+            is_goal = False
         elif event.type == SDL_MOUSEMOTION:
             if(isMouseClicked) :
                 MouseList.append([event.x, 600 - event.y, random.randint(0, 3)])
@@ -119,9 +139,10 @@ def handle_events():
         elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):
             isMouseClicked = False
 
+
 def update():
     maincharacter.update()
-
+    stargoal.update()
 
 def draw():
     global MouseList
@@ -130,6 +151,7 @@ def draw():
     background.draw()
     maincharacter.draw()
     startbutton.draw()
+    stargoal.draw()
 
     for i, d in enumerate(MouseList):
         if (i > 0):
