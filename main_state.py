@@ -57,20 +57,21 @@ class Main_character:
             return True
 
     def update(self, frame_time, get_boxList):
-        # x축으로 이동 후 충돌 체크 후 충돌하였다면 다시 x축으로 돌아온다
-        self.x += frame_time * self.MOVER_PER_SEC
-        # LandBox 리스트의 각 원소에 대하여
-        for d in get_boxList:
-            # 충돌 박스를 가져와서 바운딩 박스와 바운딩 박스끼리의 충돌 처리를 수행한다
-            if(self.bb2bb(d.get_collisionBox())):
-                self.x -= frame_time * self.MOVER_PER_SEC
+        if(isButtonClicked):
+            # x축으로 이동 후 충돌 체크 후 충돌하였다면 다시 x축으로 돌아온다
+            self.x += frame_time * self.MOVER_PER_SEC
+            # LandBox 리스트의 각 원소에 대하여
+            for d in get_boxList:
+                # 충돌 박스를 가져와서 바운딩 박스와 바운딩 박스끼리의 충돌 처리를 수행한다
+                if(self.bb2bb(d.get_collisionBox())):
+                    self.x -= frame_time * self.MOVER_PER_SEC
 
-        # 마찬가지로 y축으로 이동 후 충돌 체크 후 충돌하였다면 다시 y축으로 돌아온다
-        self.y -= frame_time * self.MOVER_PER_SEC
-        # LandBox 리스트의 각 원소에 대하여
-        for d in get_boxList:
-            if(self.bb2bb(d.get_collisionBox())):
-                self.y += frame_time * self.MOVER_PER_SEC
+            # 마찬가지로 y축으로 이동 후 충돌 체크 후 충돌하였다면 다시 y축으로 돌아온다
+            self.y -= frame_time * self.MOVER_PER_SEC
+            # LandBox 리스트의 각 원소에 대하여
+            for d in get_boxList:
+                if(self.bb2bb(d.get_collisionBox())):
+                    self.y += frame_time * self.MOVER_PER_SEC
 
 
 class Stargoal:
