@@ -14,12 +14,12 @@ from Land import Land
 name = "MainState"
 is_goal = True
 isMouseClicked = False
-
+isButtonClicked = False
 # 마우스 좌표 저장에 대한 리스트
 MouseList = []
 ColorList = [[217, 65, 197], [165, 102, 255], [71, 200, 62], [92, 209, 229]]
 LandBoxList = []
-
+MainCharacterList = []
 class Background:
     def __init__(self):
         self.image = load_image('resource/game_background.png')
@@ -30,13 +30,11 @@ class Background:
 
 class Main_character:
     image = None
-
     MOVER_PER_SEC = 70
 
     def __init__(self):
         self.x, self.y = 50, 220
         self.width, self.height = 50, 50
-
         if self.image == None:
             self.image = load_image('resource/main_character.png')
 
@@ -73,6 +71,8 @@ class Main_character:
         for d in get_boxList:
             if(self.bb2bb(d.get_collisionBox())):
                 self.y += frame_time * self.MOVER_PER_SEC
+
+
 class Stargoal:
     image = None
 
@@ -150,11 +150,12 @@ def enter():
 
 def exit():
     global maincharacter, background, startbutton, land, stargoal
+    global LandBoxList
     del(maincharacter)
     del(background)
     del(startbutton)
     del(stargoal)
-
+    del(LandBoxList)
 current_time = 0.0
 
 def get_frame_time():
@@ -171,7 +172,7 @@ def resume():
     pass
 
 def handle_events():
-    global isMouseClicked, MouseList, maincharacter, stargoal, is_goal, frame
+    global isMouseClicked, isButtonClicked, MouseList, maincharacter, stargoal, is_goal, frame
     events = get_events()
 
     for event in events:
@@ -185,17 +186,19 @@ def handle_events():
             game_framework.change_state(title_state)
         elif (event.type, event.button) == (SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT):
             isMouseClicked = True
+            isButtonClicked = True
+            if(isButtonClicked):
+                startbutton.image = load_image('resource/start_button2.png')
+                startbutton.draw()
             print(event.x, 600 - event.y)
         elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):
             isMouseClicked = False
 
 
 def update():
-    global LandBoxList
+    global LandBoxList, MainCharacterList
     frame_time = get_frame_time()       # 새로 추가 (시간 개념)
-
     maincharacter.update(frame_time, LandBoxList)
-    # stargoal.update(get_frame_time()) # 잘못된 시간 사용(fram_time에서 현재 프레임에 걸린 시간을 구해서 모든 객체에 일괄적으로 적용해야 함)
     stargoal.update(frame_time)
 
 def draw():
