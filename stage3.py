@@ -1,3 +1,4 @@
+__author__ = 'Min'
 
 import sys
 import random
@@ -6,8 +7,8 @@ import os
 
 import game_framework
 import title_state
-import main_state  #스테이지마다 바뀌는것
-import stage3   #스테이지마다 바뀌는것
+import stage2  #스테이지마다 바뀌는것
+import stage4   #스테이지마다 바뀌는것
 from pico2d import *
 
 from Land import Land
@@ -74,7 +75,7 @@ class Main_character:
                 if(self.bb2bb(d.get_collisionBox())):
                     self.y += frame_time * self.MOVER_PER_SEC
         if(self.bb2bb(stargoal.get_collisionBox())):
-            game_framework.change_state(stage3)
+            game_framework.change_state(stage4)
 
 class Stargoal:
     image = None

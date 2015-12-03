@@ -1,3 +1,5 @@
+__author__ = 'Min'
+__author__ = 'Min'
 
 import sys
 import random
@@ -6,8 +8,8 @@ import os
 
 import game_framework
 import title_state
-import main_state  #스테이지마다 바뀌는것
-import stage3   #스테이지마다 바뀌는것
+import stage2  #스테이지마다 바뀌는것
+#import stage4   #스테이지마다 바뀌는것
 from pico2d import *
 
 from Land import Land
