@@ -15,6 +15,7 @@ name = "MainState"
 is_goal = True
 isMouseClicked = False
 isButtonClicked = False
+none = None
 # 마우스 좌표 저장에 대한 리스트
 MouseList = []
 ColorList = [[217, 65, 197], [165, 102, 255], [71, 200, 62], [92, 209, 229]]
@@ -89,10 +90,20 @@ class Stargoal:
 
     def __init__(self):
         self.x, self.y = 750, 200
+        self.width, self.height = 50, 50
         self.frame = random.randint(0,7)
         self.total_frames = 0.0
         if self.image == None:
             self.image = load_image('resource/stargoal_animation.png')
+
+    def bb2bb(self, get_bb):
+        if(self.x + (self.width / 2) < get_bb[0] or
+           self.x - (self.width / 2) > get_bb[2] or
+           self.y + (self.height / 2) < get_bb[1] or
+           self.y - (self.height / 2) > get_bb[3]):
+            return False
+        else:
+            return True
 
     def update(self, frame_time):
         distance = stargoal.RUN_SPEED_PPS * frame_time
@@ -126,7 +137,6 @@ class LandBox:
 
     def draw(self):
         draw_fill_rectangle(self.leftBottomX, self.leftBottomY, self.rightTopX - self.leftBottomX, self.rightTopY - self.leftBottomY)
-
     def update(self):
         pass
 
