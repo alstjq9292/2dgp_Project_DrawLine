@@ -1,3 +1,4 @@
+__author__ = 'Min'
 
 import sys
 import random
@@ -5,8 +6,8 @@ import json
 import os
 
 import game_framework
-import title_state
-import stage2
+import main_state
+
 from pico2d import *
 
 from Land import Land
@@ -15,6 +16,7 @@ name = "MainState"
 is_goal = True
 isMouseClicked = False
 isButtonClicked = False
+none = None
 # 마우스 좌표 저장에 대한 리스트
 MouseList = []
 ColorList = [[217, 65, 197], [165, 102, 255], [71, 200, 62], [92, 209, 229]]
@@ -56,7 +58,7 @@ class Main_character:
         else:
             return True
 
-    def update(self, frame_time, get_boxList, get_stargoal):
+    def update(self, frame_time, get_boxList):
         if(isButtonClicked):
             # x축으로 이동 후 충돌 체크 후 충돌하였다면 다시 x축으로 돌아온다
             self.x += frame_time * self.MOVER_PER_SEC
@@ -72,8 +74,7 @@ class Main_character:
             for d in get_boxList:
                 if(self.bb2bb(d.get_collisionBox())):
                     self.y += frame_time * self.MOVER_PER_SEC
-        if(self.bb2bb(stargoal.get_collisionBox())):
-            game_framework.change_state(stage2)
+
 
 class Stargoal:
     image = None
@@ -114,7 +115,7 @@ class Stargoal:
         self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
 
     def get_collisionBox(self):
-        return ([self.x - self.width, self.y - self.height, self.x + self.width, self.y + self.height])
+        return ([self.x, self.y, self.width, self.height])
 
 class Start_button:
     image = None
@@ -157,17 +158,17 @@ def enter():
 
     # Landbox 리스트 내용 초기화
     LandBoxList.append(LandBox(0, 0, 800, 160))
-    LandBoxList.append(LandBox(460, 0, 800, 160))
+    #LandBoxList.append(LandBox(460, 0, 800, 160))
 
     current_time = get_time()           # 새로 추가 (시간 개념)
 
 def exit():
-    global maincharacter, background, startbutton, land
-    global LandBoxList, Stargoal
+    global maincharacter, background, startbutton, land, stargoal
+    global LandBoxList
     del(maincharacter)
     del(background)
     del(startbutton)
-    del(Stargoal)
+    del(stargoal)
     del(LandBoxList)
 current_time = 0.0
 
@@ -196,7 +197,7 @@ def handle_events():
             if(isMouseClicked) :
                 MouseList.append([event.x, 600 - event.y, random.randint(0, 3)])
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
-            game_framework.change_state(title_state)
+            game_framework.change_state(main_state)
         elif (event.type, event.button) == (SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT):
             isMouseClicked = True
             isButtonClicked = True
@@ -208,11 +209,10 @@ def handle_events():
             isMouseClicked = False
 
 
-
 def update():
-    global LandBoxList, MainCharacterList, stargoal
+    global LandBoxList, MainCharacterList
     frame_time = get_frame_time()       # 새로 추가 (시간 개념)
-    maincharacter.update(frame_time, LandBoxList, stargoal)
+    maincharacter.update(frame_time, LandBoxList)
     stargoal.update(frame_time)
 
 def draw():
@@ -231,7 +231,6 @@ def draw():
 
     for d in LandBoxList:
         d.draw()
-
 
     update_canvas()
 
