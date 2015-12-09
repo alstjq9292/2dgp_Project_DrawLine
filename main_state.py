@@ -27,6 +27,13 @@ class Background:
     def draw(self):
         self.image.draw(400,300)
 
+class Tutorial:
+    def __init__(self):
+        self.image = load_image('resource/tutorial1.png')
+
+    def draw(self):
+        self.image.draw(400,300)
+
 
 class Main_character:
     image = None
@@ -146,12 +153,13 @@ class LandBox:
         return ([self.leftBottomX, self.leftBottomY, self.rightTopX, self.rightTopY])
 
 def enter():
-    global maincharacter, background, startbutton, land, stargoal
+    global maincharacter, background, startbutton, land, stargoal, tutorial
     global current_time
     global LandBoxList
 
     maincharacter = Main_character()
     background = Background()
+    tutorial = Tutorial()
     startbutton = Start_button()
     stargoal = Stargoal(700, 210, 50, 50)
 
@@ -163,12 +171,13 @@ def enter():
 
 def exit():
     global maincharacter, background, startbutton, land
-    global LandBoxList, Stargoal
+    global LandBoxList, Stargoal, tutorial1
     del(maincharacter)
     del(background)
     del(startbutton)
     del(Stargoal)
     del(LandBoxList)
+    del(tutorial1)
 current_time = 0.0
 
 def get_frame_time():
@@ -185,7 +194,7 @@ def resume():
     pass
 
 def handle_events():
-    global isMouseClicked, isButtonClicked, MouseList, maincharacter, stargoal, is_goal, frame
+    global isMouseClicked, isButtonClicked, MouseList, maincharacter, stargoal, is_goal, frame, tutorial
     events = get_events()
 
     for event in events:
@@ -202,6 +211,8 @@ def handle_events():
             if((10 < event.x < 90) or (515 < event.y < 585)):
                 startbutton.image = load_image('resource/start_button2.png')
                 startbutton.draw()
+                tutorial.image = load_image('resource/tutorial2.png')
+                tutorial.draw()
                 isButtonClicked = True
             print(event.x, 600 - event.y)
         elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):
@@ -220,6 +231,7 @@ def draw():
 
     clear_canvas()
     background.draw()
+    tutorial1.draw()
     maincharacter.draw()
     startbutton.draw()
     stargoal.draw()
