@@ -34,7 +34,7 @@ class Main_character:
     MOVER_PER_SEC = 70
 
     def __init__(self):
-        self.x, self.y = 50, 420
+        self.x, self.y = 50, 470
         self.width, self.height = 50, 50
         if self.image == None:
             self.image = load_image('resource/main_character.png')
@@ -154,11 +154,11 @@ def enter():
     maincharacter = Main_character()
     background = Background()
     startbutton = Start_button()
-    stargoal = Stargoal(350, 210, 50, 50)  #스테이지마다 바뀌는 것
+    stargoal = Stargoal(700, 210, 50, 50)  #스테이지마다 바뀌는 것
 
     # Landbox 리스트 내용 초기화
-    LandBoxList.append(LandBox(0, 0, 300, 160))  #스테이지마다 바뀌는 것
-    LandBoxList.append(LandBox(310, 0, 800, 160))  #스테이지마다 바뀌는 것
+    LandBoxList.append(LandBox(0, 0, 300, 360))  #스테이지마다 바뀌는 것
+    LandBoxList.append(LandBox(350, 0, 800, 160))  #스테이지마다 바뀌는 것
 
     current_time = get_time()           # 새로 추가 (시간 개념)
 
@@ -200,10 +200,10 @@ def handle_events():
             game_framework.change_state(title_state)
         elif (event.type, event.button) == (SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT):
             isMouseClicked = True
-            isButtonClicked = True
-            if(isButtonClicked):
+            if(10 < event.x < 90 or 515 < event.y < 585):
                 startbutton.image = load_image('resource/start_button2.png')
                 startbutton.draw()
+                isButtonClicked = True
             print(event.x, 600 - event.y)
         elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):
             isMouseClicked = False
