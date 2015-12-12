@@ -60,7 +60,7 @@ def IntersectionEX(px1_begin, py1_begin, px1_end, py1_end, px2_begin, py2_begin,
         return False
 
     intersectionX = px1_begin + t * (px1_end - px1_begin)
-    intersectionY = py1_begin + t * (py1_end - py1_begin)
+    intersectionY = py1_begin + t * (py1_end - py1_begin) + 25
 
     return True
 
@@ -115,7 +115,7 @@ class Main_character:
                 # myBox.postX = self.postX,myBox.postY = self.postY, myBox.posX = self.x, myBox.posY = self.y,
                 # linePoint[i-1].posX = MouseList[i-1][0]
                 if (i > 0):
-                    if(IntersectionEX(self.postX, self.postY, self.x, self.y, MouseList[i - 1][0], MouseList[i-1][1], MouseList[i][0], MouseList[i][1])):
+                    if(IntersectionEX(self.postX, self.postY-25, self.x, self.y-25, MouseList[i - 1][0], MouseList[i-1][1], MouseList[i][0], MouseList[i][1])):
                         dist = GetVectorSize(self.x - intersectionX, self.y - intersectionY)
                         newVecX = MouseList[i-1][0] - MouseList[i][0]
                         newVecY = MouseList[i-1][1] - MouseList[i][1]
@@ -145,6 +145,8 @@ class Main_character:
                         interpolatedVecX = vecX - (((vecX * newVecX) + (vecY * newVecY)) / ((newVecX * newVecX) + (newVecY * newVecY)) * newVecX)
                         interpolatedVecY = vecY - (((vecX * newVecX) + (vecY * newVecY)) / ((newVecX * newVecX) + (newVecY * newVecY)) * newVecY)
                         interpolatedVecSize = GetVectorSize(interpolatedVecX, interpolatedVecY)
+                        if(interpolatedVecSize < 0.000001):
+                            interpolatedVecSize = 0.000001
                         interpolatedVecX /= interpolatedVecSize
                         interpolatedVecY /= interpolatedVecSize
 
