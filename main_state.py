@@ -3,6 +3,7 @@ import sys
 import random
 import json
 import os
+import math
 
 import game_framework
 import title_state
@@ -15,6 +16,11 @@ name = "MainState"
 is_goal = True
 isMouseClicked = False
 isButtonClicked = False
+
+vecX = 1.0
+vecY = 0.0
+intersectionX = None
+intersectionY = None
 # 마우스 좌표 저장에 대한 리스트
 MouseList = []
 ColorList = [[217, 65, 197], [165, 102, 255], [71, 200, 62], [92, 209, 229]]
@@ -33,6 +39,28 @@ class Tutorial:
 
     def draw(self):
         self.image.draw(400,300)
+
+def GetVectorSize(vecX, vecY):
+    return math.sqrt((vecX * vecX) + (vecY * vecY))
+
+def IntersectionEX(px1_begin, py1_begin, px1_end, py1_end, px2_begin, py2_begin, px2_end, py2_end):
+    global intersectionX, intersectionY
+    under = (py2_end - py2_begin)*(px1_end - px1_begin) - (px2_end - px2_begin)*(py1_end - py1_begin)
+    if(under == 0):
+       return False
+
+    _t = (px2_end - px2_begin)*(py1_begin - py2_begin) - (py2_end - py2_begin)*(px1_begin - px2_begin)
+    _s = (px1_end - px1_begin)*(py1_begin - py2_begin) - (py1_end - py1_begin)*(px1_begin - px2_begin)
+
+    t = _t / under
+    s = _s / under
+    if(t < 0.0 or t > 1.0 or s < 0.0 or s > 1.0):
+        return False
+    if(_t == 0 and _s == 0):
+        return False
+
+    intersectionX = px1_begin + t * (px1_end - px1_begin)
+    intersectionY = py1_begin + t * (py1_end - py1_begin)
 
 
 class Main_character:
@@ -171,13 +199,13 @@ def enter():
 
 def exit():
     global maincharacter, background, startbutton, land
-    global LandBoxList, Stargoal, tutorial1
+    global LandBoxList, Stargoal, tutorial
     del(maincharacter)
     del(background)
     del(startbutton)
     del(Stargoal)
     del(LandBoxList)
-    del(tutorial1)
+    del(tutorial)
 current_time = 0.0
 
 def get_frame_time():
@@ -231,7 +259,7 @@ def draw():
 
     clear_canvas()
     background.draw()
-    tutorial1.draw()
+    tutorial.draw()
     maincharacter.draw()
     startbutton.draw()
     stargoal.draw()
