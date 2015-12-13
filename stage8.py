@@ -8,11 +8,10 @@ import math
 
 import game_framework
 import title_state
-import stage6
 from pico2d import *
 from Land import Land
 
-name = "stage2"
+name = "stage8"
 is_goal = True
 isMouseClicked = False
 isButtonClicked = False
@@ -89,7 +88,7 @@ class Main_character:
             return True
 
     def update(self, frame_time, get_boxList, get_stargoal):
-        global MouseList, intersectionX, intersectionY, vecX, vecY, left
+        global MouseList, intersectionX, intersectionY, vecX, vecY, newVecX
         if(isButtonClicked):
             # x축으로 이동 후 충돌 체크 후 충돌하였다면 다시 x축으로 돌아온다
             self.postX = self.x
@@ -153,9 +152,16 @@ class Main_character:
                         self.x += (interpolatedVecX * dist * 1) + (newVecX * 1)
                         self.y += (interpolatedVecY * dist * 1) + (newVecY * 1)
         if(self.bb2bb(stargoal.get_collisionBox())):
-            game_framework.push_state(stage6)
+            background.image = load_image('resource/last.png')
+            background.draw()
+            delay(3)
+            game_framework.quit()
 
         if(self.bb2bb(left.get_collisionBox())):
+            self.MOVER_PER_SECX *= -1
+            vecX *= -1
+
+        if(self.bb2bb(right.get_collisionBox())):
             self.MOVER_PER_SECX *= -1
             vecX *= -1
 
@@ -165,10 +171,35 @@ class Left:
 
     def __init__(self, gx, gy):
         self.x, self.y = gx, gy
-        self.width, self.height = 10, 10
+        self.width, self.height = 1, 1
 
         if self.image == None:
             self.image = load_image('resource/return.png')
+
+    def bb2bb(self, get_bb):
+        if(self.x + (self.width / 2) < get_bb[0] or
+           self.x - (self.width / 2) > get_bb[2] or
+           self.y + (self.height / 2) < get_bb[1] or
+           self.y - (self.height / 2) > get_bb[3]):
+            return False
+        else:
+            return True
+
+    def draw(self):
+        self.image.draw(self.x, self.y)
+
+    def get_collisionBox(self):
+        return ([self.x - self.width, self.y - self.height, self.x + self.width, self.y + self.height])
+
+class Right:
+    image = None
+
+    def __init__(self, gx, gy):
+        self.x, self.y = gx, gy
+        self.width, self.height = 1, 1
+
+        if self.image == None:
+            self.image = load_image('resource/return2.png')
 
     def bb2bb(self, get_bb):
         if(self.x + (self.width / 2) < get_bb[0] or
@@ -270,26 +301,27 @@ class LandBox:
         return ([self.leftBottomX, self.leftBottomY, self.rightTopX, self.rightTopY])
 
 def enter():
-    global maincharacter, background, startbutton,  land, stargoal, againbutton, left
+    global maincharacter, background, startbutton,  land, stargoal, againbutton, left, right
     global current_time
     global LandBoxList
 
-    maincharacter = Main_character(150, 210)
+    maincharacter = Main_character(500, 260)
     background = Background()
 
     startbutton = Start_button(50, 550)
     againbutton = Again_button(750, 550)
-    stargoal = Stargoal(50, 200) # 50, 200
-    left = Left(750, 300)
+    stargoal = Stargoal(350, 150)
+    left = Left(700, 300)
+    right = Right(50, 400)
     # Landbox 리스트 내용 초기화
-    LandBoxList.append(LandBox(50, 0, 200, 160))
-    #LandBoxList.append(LandBox(50, -350, 200, -450))
-    LandBoxList.append(LandBox(700, 0, 800, 250))
+    LandBoxList.append(LandBox(400, 0, 450, 300))
+    LandBoxList.append(LandBox(450, 0, 750, 210))
+    LandBoxList.append(LandBox(750, 0, 800, 550))
 
     current_time = get_time()           # 새로 추가 (시간 개념)
 
 def exit():
-    global maincharacter, background, startbutton, land, againbutton, left
+    global maincharacter, background, startbutton, land, againbutton, left, right
     global LandBoxList, Stargoal
     del(maincharacter)
     del(background)
@@ -298,6 +330,7 @@ def exit():
     del(Stargoal)
     del(LandBoxList)
     del(left)
+    del(right)
 current_time = 0.0
 
 def get_frame_time():
@@ -355,11 +388,13 @@ def draw():
 
     clear_canvas()
     background.draw()
+    left.draw()
+    right.draw()
     maincharacter.draw()
     startbutton.draw()
     againbutton.draw()
     stargoal.draw()
-    left.draw()
+
 
     for i, d in enumerate(MouseList):
         if (i > 0):
@@ -376,5 +411,5 @@ def draw():
 def main():
     pass
 
-if __name__ == '__stage5__':
+if __name__ == '__stage7__':
     main()

@@ -15,7 +15,7 @@ name = "MainState"
 is_goal = True
 isMouseClicked = False
 isButtonClicked = False
-
+clear = None
 vecX = 1.0
 vecY = 0.0
 intersectionX = None
@@ -165,7 +165,7 @@ class Main_character:
 
 class Stargoal:
     image = None
-
+    clear = None
     PIXEL_PER_METER = (10.0 / 0.1) # 10 pixel 10 cm
     RUN_SPEED_KMPH = 20.0
     RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
@@ -183,6 +183,7 @@ class Stargoal:
         self.total_frames = 0.0
         if self.image == None:
             self.image = load_image('resource/stargoal_animation.png')
+
 
     def bb2bb(self, get_bb):
         if(self.x + (self.width / 2) < get_bb[0] or
@@ -257,7 +258,7 @@ def enter():
     tutorial = Tutorial()
     startbutton = Start_button(50, 550)
     againbutton = Again_button(750, 550)
-    stargoal = Stargoal(150, 210) # 700, 210
+    stargoal = Stargoal(700, 210) # 700, 210
 
     # Landbox 리스트 내용 초기화
     LandBoxList.append(LandBox(0, 0, 800, 160))

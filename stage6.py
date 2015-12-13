@@ -8,8 +8,7 @@ import math
 
 import game_framework
 import title_state
-import stage3
-import stage5
+import stage7
 from pico2d import *
 from Land import Land
 

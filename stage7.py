@@ -1,5 +1,4 @@
 __author__ = 'Min'
-__author__ = 'Min'
 
 import sys
 import random
@@ -9,8 +8,7 @@ import math
 
 import game_framework
 import title_state
-import stage3
-import stage5
+import stage8
 from pico2d import *
 from Land import Land
 
@@ -155,7 +153,7 @@ class Main_character:
                         self.x += (interpolatedVecX * dist * 1) + (newVecX * 1)
                         self.y += (interpolatedVecY * dist * 1) + (newVecY * 1)
         if(self.bb2bb(stargoal.get_collisionBox())):
-            game_framework.push_state(stage7)
+            game_framework.push_state(stage8)
 
         if(self.bb2bb(left.get_collisionBox())):
             self.MOVER_PER_SECX *= -1
@@ -305,18 +303,16 @@ def enter():
     global current_time
     global LandBoxList
 
-    maincharacter = Main_character(50, 210)
+    maincharacter = Main_character(400, 210)
     background = Background()
 
     startbutton = Start_button(50, 550)
     againbutton = Again_button(750, 550)
-    stargoal = Stargoal(650, 100)
-    left = Left(350, 250)
-    right = Right(50, 320)
+    stargoal = Stargoal(400, 550)
+    left = Left(750, 300)
+    right = Right(50, 400)
     # Landbox 리스트 내용 초기화
-    LandBoxList.append(LandBox(0, 0, 400, 160))
-    LandBoxList.append(LandBox(400, 0, 500, 350))
-    LandBoxList.append(LandBox(700, 0, 800, 500))
+    LandBoxList.append(LandBox(300, 0, 500, 160))
 
     current_time = get_time()           # 새로 추가 (시간 개념)
 
