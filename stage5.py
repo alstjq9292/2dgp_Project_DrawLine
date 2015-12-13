@@ -1,3 +1,4 @@
+__author__ = 'Min'
 
 import sys
 import random
@@ -7,8 +8,8 @@ import math
 
 import game_framework
 import title_state
-import main_state
 import stage3
+import stage5
 from pico2d import *
 from Land import Land
 
@@ -31,13 +32,6 @@ class Background:
         self.image = load_image('resource/game_background.png')
 
 
-
-    def draw(self):
-        self.image.draw(400,300)
-
-class Tutorial:
-    def __init__(self):
-        self.image = load_image('resource/tutorial3.png')
 
     def draw(self):
         self.image.draw(400,300)
@@ -68,7 +62,8 @@ def IntersectionEX(px1_begin, py1_begin, px1_end, py1_end, px2_begin, py2_begin,
 
 class Main_character:
     image = None
-    MOVER_PER_SEC = 70
+    MOVER_PER_SECX = 70
+    MOVER_PER_SECY = 70
 
     def __init__(self, x, y):
         self.x, self.y = x, y
@@ -99,20 +94,20 @@ class Main_character:
         if(isButtonClicked):
             # x축으로 이동 후 충돌 체크 후 충돌하였다면 다시 x축으로 돌아온다
             self.postX = self.x
-            self.x += frame_time * self.MOVER_PER_SEC
+            self.x += frame_time * self.MOVER_PER_SECX
             # LandBox 리스트의 각 원소에 대하여
             for d in get_boxList:
                 # 충돌 박스를 가져와서 바운딩 박스와 바운딩 박스끼리의 충돌 처리를 수행한다
                 if(self.bb2bb(d.get_collisionBox())):
-                    self.x -= frame_time * self.MOVER_PER_SEC
+                    self.x -= frame_time * self.MOVER_PER_SECX
 
             # 마찬가지로 y축으로 이동 후 충돌 체크 후 충돌하였다면 다시 y축으로 돌아온다
             self.postY = self.y
-            self.y -= frame_time * self.MOVER_PER_SEC
+            self.y -= frame_time * self.MOVER_PER_SECY
             # LandBox 리스트의 각 원소에 대하여
             for d in get_boxList:
                 if(self.bb2bb(d.get_collisionBox())):
-                    self.y += frame_time * self.MOVER_PER_SEC
+                    self.y += frame_time * self.MOVER_PER_SECY
             for i, d in enumerate(MouseList):
                 if (i > 0):
                     if(IntersectionEX(self.postX, self.postY-25, self.x, self.y-25, MouseList[i - 1][0], MouseList[i-1][1], MouseList[i][0], MouseList[i][1])):
@@ -159,8 +154,36 @@ class Main_character:
                         self.x += (interpolatedVecX * dist * 1) + (newVecX * 1)
                         self.y += (interpolatedVecY * dist * 1) + (newVecY * 1)
         if(self.bb2bb(stargoal.get_collisionBox())):
-            game_framework.push_state(stage3)
+            game_framework.push_state(stage5)
 
+        if(self.bb2bb(left.get_collisionBox())):
+            self.MOVER_PER_SECX *= -1
+
+
+class Left:
+    image = None
+
+    def __init__(self, gx, gy):
+        self.x, self.y = gx, gy
+        self.width, self.height = 50, 50
+
+        if self.image == None:
+            self.image = load_image('resource/return.png')
+
+    def bb2bb(self, get_bb):
+        if(self.x + (self.width / 2) < get_bb[0] or
+           self.x - (self.width / 2) > get_bb[2] or
+           self.y + (self.height / 2) < get_bb[1] or
+           self.y - (self.height / 2) > get_bb[3]):
+            return False
+        else:
+            return True
+
+    def draw(self):
+        self.image.draw(self.x, self.y)
+
+    def get_collisionBox(self):
+        return ([self.x - self.width, self.y - self.height, self.x + self.width, self.y + self.height])
 
 class Stargoal:
     image = None
@@ -247,33 +270,34 @@ class LandBox:
         return ([self.leftBottomX, self.leftBottomY, self.rightTopX, self.rightTopY])
 
 def enter():
-    global maincharacter, background, startbutton,  land, stargoal, tutorial, againbutton
+    global maincharacter, background, startbutton,  land, stargoal, againbutton, left
     global current_time
     global LandBoxList
 
-    maincharacter = Main_character(50, 220)
+    maincharacter = Main_character(50, 480)
     background = Background()
-    tutorial = Tutorial()
+
     startbutton = Start_button(50, 550)
     againbutton = Again_button(750, 550)
-    stargoal = Stargoal(150, 210) # 700, 210
-
+    stargoal = Stargoal(750, 300)
+    left = Left(150, 480)
     # Landbox 리스트 내용 초기화
-    LandBoxList.append(LandBox(0, 0, 300, 160))
-    LandBoxList.append(LandBox(460, 0, 800, 160))
+    LandBoxList.append(LandBox(0, 0, 200, 430))
+    LandBoxList.append(LandBox(300, -200, 500, 600))
+    LandBoxList.append(LandBox(700, 0, 800, 250))
 
     current_time = get_time()           # 새로 추가 (시간 개념)
 
 def exit():
-    global maincharacter, background, startbutton, land, againbutton
-    global LandBoxList, Stargoal, tutorial
+    global maincharacter, background, startbutton, land, againbutton, left
+    global LandBoxList, Stargoal
     del(maincharacter)
     del(background)
     del(startbutton)
     del(againbutton)
     del(Stargoal)
     del(LandBoxList)
-    del(tutorial)
+    del(left)
 current_time = 0.0
 
 def get_frame_time():
@@ -290,7 +314,7 @@ def resume():
     pass
 
 def handle_events():
-    global isMouseClicked, isButtonClicked, MouseList, maincharacter, stargoal, is_goal, frame, tutorial, main_state
+    global isMouseClicked, isButtonClicked, MouseList, maincharacter, stargoal, is_goal, frame, main_state
     events = get_events()
 
     for event in events:
@@ -331,11 +355,11 @@ def draw():
 
     clear_canvas()
     background.draw()
-    tutorial.draw()
     maincharacter.draw()
     startbutton.draw()
     againbutton.draw()
     stargoal.draw()
+    left.draw()
 
     for i, d in enumerate(MouseList):
         if (i > 0):
@@ -352,5 +376,5 @@ def draw():
 def main():
     pass
 
-if __name__ == '__stage2__':
+if __name__ == '__stage5__':
     main()

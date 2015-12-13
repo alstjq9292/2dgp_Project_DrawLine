@@ -71,8 +71,8 @@ class Main_character:
     image = None
     MOVER_PER_SEC = 70
 
-    def __init__(self):
-        self.x, self.y = 50, 220
+    def __init__(self, x, y):
+        self.x, self.y = x, y
         self.width, self.height = 50, 50
         if self.image == None:
             self.image = load_image('resource/main_character.png')
@@ -176,9 +176,9 @@ class Stargoal:
     ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
     FRAME_PER_ACTION = 8
 
-    def __init__(self, gx, gy, gw, gh):
+    def __init__(self, gx, gy):
         self.x, self.y = gx, gy
-        self.width, self.height = gw, gh
+        self.width, self.height = 50, 50
         self.frame = random.randint(0,7)
         self.total_frames = 0.0
         if self.image == None:
@@ -207,8 +207,8 @@ class Stargoal:
 class Start_button:
     image = None
 
-    def __init__(self):
-        self.x, self.y = 50, 550
+    def __init__(self, x, y):
+        self.x, self.y = x, y
         if self.image == None:
             self.image = load_image('resource/start_button.png')
 
@@ -221,8 +221,8 @@ class Start_button:
 class Again_button:
     image = None
 
-    def __init__(self):
-        self.x, self.y = 750, 550
+    def __init__(self, x, y):
+        self.x, self.y = x, y
         if self.image == None:
             self.image = load_image('resource/again_button.png')
 
@@ -252,12 +252,12 @@ def enter():
     global current_time
     global LandBoxList
 
-    maincharacter = Main_character()
+    maincharacter = Main_character(50, 220)
     background = Background()
     tutorial = Tutorial()
-    startbutton = Start_button()
-    againbutton = Again_button()
-    stargoal = Stargoal(700, 210, 50, 50)
+    startbutton = Start_button(50, 550)
+    againbutton = Again_button(750, 550)
+    stargoal = Stargoal(150, 210) # 700, 210
 
     # Landbox 리스트 내용 초기화
     LandBoxList.append(LandBox(0, 0, 800, 160))
