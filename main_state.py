@@ -9,7 +9,6 @@ import game_framework
 import title_state
 import stage2
 from pico2d import *
-
 from Land import Land
 
 name = "MainState"
@@ -116,8 +115,6 @@ class Main_character:
                 if(self.bb2bb(d.get_collisionBox())):
                     self.y += frame_time * self.MOVER_PER_SEC
             for i, d in enumerate(MouseList):
-                # myBox.postX = self.postX,myBox.postY = self.postY, myBox.posX = self.x, myBox.posY = self.y,
-                # linePoint[i-1].posX = MouseList[i-1][0]
                 if (i > 0):
                     if(IntersectionEX(self.postX, self.postY-25, self.x, self.y-25, MouseList[i - 1][0], MouseList[i-1][1], MouseList[i][0], MouseList[i][1])):
                         dist = GetVectorSize(self.x - intersectionX, self.y - intersectionY)
@@ -221,6 +218,20 @@ class Start_button:
     def update(self):
         pass
 
+class Again_button:
+    image = None
+
+    def __init__(self):
+        self.x, self.y = 750, 550
+        if self.image == None:
+            self.image = load_image('resource/again_button.png')
+
+    def draw(self):
+        self.image.draw(self.x, self.y)
+
+    def update(self):
+        pass
+
 class LandBox:
     def __init__(self, lbX, lbY, rtX, rtY):
         self.leftBottomX = lbX
@@ -237,7 +248,7 @@ class LandBox:
         return ([self.leftBottomX, self.leftBottomY, self.rightTopX, self.rightTopY])
 
 def enter():
-    global maincharacter, background, startbutton, land, stargoal, tutorial
+    global maincharacter, background, startbutton,  land, stargoal, tutorial, againbutton
     global current_time
     global LandBoxList
 
@@ -245,6 +256,7 @@ def enter():
     background = Background()
     tutorial = Tutorial()
     startbutton = Start_button()
+    againbutton = Again_button()
     stargoal = Stargoal(700, 210, 50, 50)
 
     # Landbox 리스트 내용 초기화
@@ -254,11 +266,12 @@ def enter():
     current_time = get_time()           # 새로 추가 (시간 개념)
 
 def exit():
-    global maincharacter, background, startbutton, land
+    global maincharacter, background, startbutton, land, againbutton
     global LandBoxList, Stargoal, tutorial
     del(maincharacter)
     del(background)
     del(startbutton)
+    del(againbutton)
     del(Stargoal)
     del(LandBoxList)
     del(tutorial)
@@ -278,7 +291,7 @@ def resume():
     pass
 
 def handle_events():
-    global isMouseClicked, isButtonClicked, MouseList, maincharacter, stargoal, is_goal, frame, tutorial
+    global isMouseClicked, isButtonClicked, MouseList, maincharacter, stargoal, is_goal, frame, tutorial, main_state
     events = get_events()
 
     for event in events:
@@ -300,6 +313,11 @@ def handle_events():
                 tutorial.image = load_image('resource/tutorial2.png')
                 tutorial.draw()
                 isButtonClicked = True
+            if((710 < mx < 785) and (515 < my < 585)):
+                isButtonClicked = False
+                MouseList = []
+                enter()
+
             print(event.x, 600 - event.y)
         elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):
             isMouseClicked = False
@@ -320,6 +338,7 @@ def draw():
     tutorial.draw()
     maincharacter.draw()
     startbutton.draw()
+    againbutton.draw()
     stargoal.draw()
 
     for i, d in enumerate(MouseList):
