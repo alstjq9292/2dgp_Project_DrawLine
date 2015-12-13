@@ -1,4 +1,5 @@
 __author__ = 'Min'
+__author__ = 'Min'
 
 import sys
 import random
