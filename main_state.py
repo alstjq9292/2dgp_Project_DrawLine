@@ -29,6 +29,10 @@ MainCharacterList = []
 class Background:
     def __init__(self):
         self.image = load_image('resource/game_background.png')
+        self.bgm = load_music('resource/bgm.mp3')
+        self.bgm.set_volume(64)
+        self.bgm.repeat_play()
+
 
     def draw(self):
         self.image.draw(400,300)
@@ -69,7 +73,7 @@ class Main_character:
     MOVER_PER_SEC = 70
 
     def __init__(self):
-        self.x, self.y = 50, 320
+        self.x, self.y = 50, 220
         self.width, self.height = 50, 50
         if self.image == None:
             self.image = load_image('resource/main_character.png')
@@ -159,7 +163,7 @@ class Main_character:
                         self.x += (interpolatedVecX * dist * 1) + (newVecX * 1)
                         self.y += (interpolatedVecY * dist * 1) + (newVecY * 1)
         if(self.bb2bb(stargoal.get_collisionBox())):
-            game_framework.change_state(stage2)
+            game_framework.push_state(stage2)
 
 
 class Stargoal:
@@ -288,7 +292,9 @@ def handle_events():
             game_framework.change_state(title_state)
         elif (event.type, event.button) == (SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT):
             isMouseClicked = True
-            if((10 < event.x < 90) or (515 < event.y < 585)):
+            mx = event.x
+            my = 600 - event.y
+            if((10 < mx < 90) and (515 < my < 585)):
                 startbutton.image = load_image('resource/start_button2.png')
                 startbutton.draw()
                 tutorial.image = load_image('resource/tutorial2.png')
