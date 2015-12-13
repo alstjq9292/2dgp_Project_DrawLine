@@ -8,8 +8,8 @@ import math
 
 import game_framework
 import title_state
-import stage3
-import stage5
+import stage4
+import stage6
 from pico2d import *
 from Land import Land
 
@@ -279,7 +279,7 @@ def enter():
 
     startbutton = Start_button(50, 550)
     againbutton = Again_button(750, 550)
-    stargoal = Stargoal(50, 200)
+    stargoal = Stargoal(150, 200) # 50, 200
     left = Left(750, 300)
     # Landbox 리스트 내용 초기화
     LandBoxList.append(LandBox(50, 0, 200, 160))

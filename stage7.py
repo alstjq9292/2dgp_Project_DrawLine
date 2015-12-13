@@ -1,4 +1,5 @@
 __author__ = 'Min'
+__author__ = 'Min'
 
 import sys
 import random
@@ -410,5 +411,5 @@ def draw():
 def main():
     pass
 
-if __name__ == '__stage6__':
+if __name__ == '__stage7__':
     main()
