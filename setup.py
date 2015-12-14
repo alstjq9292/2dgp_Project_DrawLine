@@ -97,7 +97,7 @@ py2exe_options = dict(
     )
 
 
-resources = "resource/character.png resource/dot.png resource/game_background.png resource/grass.png resource/kpu_credit.png resource/main_character.png resource/run_animation.png resource/stargoal_animation.png resource/start_button.png resource/start_button2.png resource/title.png resource/title_menu.png resource/title_menu_gamestart.png".split()
+resources = resource = ['./resource/' + file_name for file_name in os.listdir('./resource/')]
  # resources = os.listdir('resources') 이렇게 하면 폴더 안에 있는 사진파일들을 한번에 넣을수 있음
 
 if platform.architecture()[0] == '32bit':
@@ -110,7 +110,7 @@ sdl_dlls = [sdl_folder + file_name for file_name in os.listdir(sdl_folder)]
 
 setup(name="name",
       windows=[mygame],
-      data_files=[('.', resources), (sdl_folder, sdl_dlls)], # copy resource to '.' folder
+      data_files=[('./resource/', resource), (sdl_folder, sdl_dlls)],
       zipfile=None,
       options={"py2exe": py2exe_options},
       )
