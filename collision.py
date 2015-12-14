@@ -3,9 +3,6 @@ from pico2d import *
 
 import game_framework
 
-
-from Land import Land # import Land class from land.py
-
 name = "collision"
 
 boy = None

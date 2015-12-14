@@ -1,16 +1,11 @@
 __author__ = 'Min'
 
-import sys
 import random
-import json
-import os
-import math
 
 import game_framework
 import title_state
 import stage7
 from pico2d import *
-from Land import Land
 
 name = "stage6"
 is_goal = True

@@ -1,15 +1,9 @@
-
-import sys
 import random
-import json
-import os
-import math
 
 import game_framework
 import title_state
 import stage2
 from pico2d import *
-from Land import Land
 
 name = "MainState"
 is_goal = True
