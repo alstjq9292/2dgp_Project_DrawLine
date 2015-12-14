@@ -158,6 +158,10 @@ class Main_character:
                         self.x += (interpolatedVecX * dist * 1) + (newVecX * 1)
                         self.y += (interpolatedVecY * dist * 1) + (newVecY * 1)
         if(self.bb2bb(stargoal.get_collisionBox())):
+            background.image = load_image('resource/last.png')
+            background.draw()
+            update_canvas()
+            delay(3)
             game_framework.push_state(stage3)
 
 

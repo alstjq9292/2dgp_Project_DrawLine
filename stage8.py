@@ -154,6 +154,7 @@ class Main_character:
         if(self.bb2bb(stargoal.get_collisionBox())):
             background.image = load_image('resource/last.png')
             background.draw()
+            update_canvas()
             delay(3)
             game_framework.quit()
 
@@ -316,7 +317,7 @@ def enter():
     # Landbox 리스트 내용 초기화
     LandBoxList.append(LandBox(400, 0, 450, 300))
     LandBoxList.append(LandBox(450, 0, 750, 210))
-    LandBoxList.append(LandBox(750, 0, 800, 550))
+    LandBoxList.append(LandBox(750, 0, 800, 500))
 
     current_time = get_time()           # 새로 추가 (시간 개념)
 
